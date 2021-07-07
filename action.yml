@@ -46,6 +46,8 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint --format=sarif ${{ inputs.directory }} 2>&1 | tee -a ${{ inputs.output-file }}
+        ./kube-linter $CONFIG lint --format=sarif ${{ inputs.directory }} 2>&1 | tee -a kubelinter.log
+        curl -s -L -o kubelinter2sarif.js https://raw.githubusercontent.com/jduimovich/kubelinter-sarif-poc/main/kubelinter2sarif.js
+        node kubelinter2sarif.js kubelinter.log ${{ inputs.outputFile }}
         exit ${PIPESTATUS[0]}
       shell: bash
